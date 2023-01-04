@@ -25,10 +25,10 @@ while True:
     response = 'HTTP/1.0 '
     # HEAD
     if request[0] == 'HEAD':
-        if request[1] !=  "/": # 요청한 데이터가 추가로 있으면
-            response += '404 Not Found'
+        if request[1] ==  "test.html": # 요청한 데이터가 추가로 있으면
+            response += '200 OK\n' + r
         else:
-            response += '200 OK'
+            response += '404 Not Found'
     # GET
     elif request[0] == 'GET':
         if request[1] == 'test.html':
