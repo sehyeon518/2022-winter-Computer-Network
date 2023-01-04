@@ -38,10 +38,9 @@ while True:
     # POST
     elif request[0] == 'POST':
         if request[1] != 'test.html' and "." in request[1]:
-            newfile = open(request[1], "w")
-            newread = newfile.read()
+            newfile = open(request[1], 'w')
             newfile.close()
-            response += '200 OK\n' + newread
+            response += '201 Created\n' + request[1]
         else:
             response += '404 Not Found'
     else:
