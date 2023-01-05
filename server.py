@@ -1,10 +1,11 @@
 from socket import *
 import time
 
-f = open('test.html', 'r')
+f = open('test.html', 'r') # test에 사용할 파일 읽기모드로 r에 담기
 r = f.read()
+f.close()
 
-date = time.strftime('%d %b %Y %H:%M:%S %Z', time.localtime(time.time()))
+date = time.strftime('%d %b %Y %H:%M:%S %Z', time.localtime(time.time())) # header의 Date
 
 serverPort = 1230 # port number
 serverSocket = socket(AF_INET, SOCK_STREAM) # SOCK_STREAM으로 TCP 방식의 socket 생성
@@ -17,51 +18,50 @@ while True:
     print('********client 연결********') # accpet가 되면 connection setup
 
     message = connectionSocket.recv(1024) # client 접속이 되면 message 읽기
-    request = message.decode() # message 해독
-    print(request)
+    request = message.decode() # request message 해독
+    print(request) # request message 출력
     request = request.split()
 
     # response 형태
     # HTTP/1.0 200 OK
-    # GET이면 파일 전체 읽어오기, HEAD이면 
-    response = 'HTTP/1.0 '
-    # HEAD
+    # GET이면 파일 전체 읽어오기
+    response = 'HTTP/1.0 ' # HTTP version: 모든 요청마다 연결과 해제 반복
+
+    # HEAD response 필요한 header 정보 #
     if request[0] == 'HEAD':
-        if request[1] ==  "test.html": # 요청한 데이터가 추가로 있으면
+        if request[1] ==  "test.html": # 정상적으로 파일을 요청한 경우
             response += '200 OK\n'  \
                       + 'Date: ' + date + '\n' \
                       + 'Server: local\n' \
                       + 'Content-Length: ' + str(len(r)) + '\n' \
-                      + 'Content-Type: text/html; charset=utf-8\n'
-        else:
+                      + 'Content-Type: text/html; charset=utf-8'
+        else: # 존재하지 않는 파일을 요청한 경우
             response += '404 Not Found\n' \
                       + 'Date: ' + date + '\n' \
-                      + 'Server: local\n'
-    # GET
+                      + 'Server: local'
+    # GET response body #
     elif request[0] == 'GET':
         if request[1] == 'test.html':
             response += '200 OK\n' \
                       + 'Date: ' + date + '\n' \
                       + 'Server: local\n' \
                       + 'Content-Length: ' + str(len(r)) + '\n' \
-                      + 'Content-Type: text/html; charset=utf-8\n' \
+                      + 'Content-Type: text/html; charset=utf-8\n\n' \
                       + r
         else:
-            response += '404 Not Found' \
+            response += '404 Not Found\n' \
                       + 'Date: ' + date + '\n' \
-                      + 'Server: local\n' \
-                      + 'Content-Length: ' + str(len(r)) + '\n' \
-                      + 'Content-Type: text/html; charset=utf-8\n'
-    # POST
+                      + 'Server: local'
+    # POST response #
     elif request[0] == 'POST':
-        if request[1] != 'test.html' and "." in request[1]:
+        if request[1] != 'test.html' and '.' in request[1]:
             newfile = open(request[1], 'w')
             newfile.close()
-            response += '201 Created\n' + request[1] \
-                      + 'Date: ' + date + '\n' \
-
+            response += '201 Created\n' + request[1] + ' '\
+                      + 'Date: ' + date
         else:
             response += '404 Not Found'
+    # Invalid method #
     else:
         response += '400 Bad Request' # method 해석 불가능한 경우
 
