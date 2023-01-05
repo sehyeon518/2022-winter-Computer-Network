@@ -1,7 +1,10 @@
 from socket import *
+import time
 
 f = open('test.html', 'r')
 r = f.read()
+
+date = time.strftime('%d %b %Y %H:%M:%S %Z', time.localtime(time.time()))
 
 serverPort = 1230 # port number
 serverSocket = socket(AF_INET, SOCK_STREAM) # SOCK_STREAM으로 TCP 방식의 socket 생성
@@ -16,7 +19,6 @@ while True:
     message = connectionSocket.recv(1024) # client 접속이 되면 message 읽기
     request = message.decode() # message 해독
     print(request)
-    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
     request = request.split()
 
     # response 형태
@@ -26,28 +28,44 @@ while True:
     # HEAD
     if request[0] == 'HEAD':
         if request[1] ==  "test.html": # 요청한 데이터가 추가로 있으면
-            response += '200 OK\n' + r
+            response += '200 OK\n'  \
+                      + 'Date: ' + date + '\n' \
+                      + 'Server: local\n' \
+                      + 'Content-Length: ' + str(len(r)) + '\n' \
+                      + 'Content-Type: text/html; charset=utf-8\n'
         else:
-            response += '404 Not Found'
+            response += '404 Not Found\n' \
+                      + 'Date: ' + date + '\n' \
+                      + 'Server: local\n'
     # GET
     elif request[0] == 'GET':
         if request[1] == 'test.html':
-            response += '200 OK\n' + r
+            response += '200 OK\n' \
+                      + 'Date: ' + date + '\n' \
+                      + 'Server: local\n' \
+                      + 'Content-Length: ' + str(len(r)) + '\n' \
+                      + 'Content-Type: text/html; charset=utf-8\n' \
+                      + r
         else:
-            response += '404 Not Found'
+            response += '404 Not Found' \
+                      + 'Date: ' + date + '\n' \
+                      + 'Server: local\n' \
+                      + 'Content-Length: ' + str(len(r)) + '\n' \
+                      + 'Content-Type: text/html; charset=utf-8\n'
     # POST
     elif request[0] == 'POST':
         if request[1] != 'test.html' and "." in request[1]:
             newfile = open(request[1], 'w')
             newfile.close()
-            response += '201 Created\n' + request[1]
+            response += '201 Created\n' + request[1] \
+                      + 'Date: ' + date + '\n' \
+
         else:
             response += '404 Not Found'
     else:
         response += '400 Bad Request' # method 해석 불가능한 경우
 
     connectionSocket.send(response.encode()) # socket 보내기
-    print(response)
     
     connectionSocket.close() # 연결 종료
     print('***********close***********')

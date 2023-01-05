@@ -12,12 +12,13 @@ while True:
     message = message.split()
 
     if message[0] == 'GET' or message[0] == 'HEAD' or message[0] == 'POST':
-        request = message[0] + " "
+        request = message[0] + ' '
         if len(message) > 1:
-            request += " ".join(message[1:])
-        request += " / HTTP/1.0\nHOST: " + serverName
+            request += ' '.join(message[1:])
+        request += ' / HTTP/1.0\n' \
+                 + 'HOST: ' + serverName + '\n' \
+                 + 'Accept-Language: en-us\n'
     else:
-        print("Invalid method")
         request = " ".join(message)
 
     # request 형태
