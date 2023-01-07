@@ -48,5 +48,5 @@ while True:
 
     response = clientSocket.recv(1024).decode() # server name, port에 접근할 필요 없음 -> socket 사용
     print(response)
-    clientSocket.close()
+    clientSocket.close() # 연결 종료
     print('***********close***********')
