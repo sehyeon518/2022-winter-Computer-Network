@@ -48,7 +48,8 @@ while True:
                       + 'Date: ' + date + '\r\n' \
                       + 'Connection: close\r\n' \
                       + 'Vary: User-Agent,Accept-Encoding\r\n' \
-                      + 'Content-Type: text/html; charset=utf-8'
+                      + 'Content-Type: text/html; charset=utf-8\r\n' \
+                      + 'Content-Length: ' + str(len(r))
         else: # 존재하지 않는 파일을 요청한 경우
             response += '404 Not Found\r\n' \
                       + 'Date: ' + date + '\r\n' \
@@ -64,7 +65,8 @@ while True:
                       + 'Date: ' + date + '\r\n' \
                       + 'Connection: close\r\n' \
                       + 'Vary: User-Agent,Accept-Encoding\r\n' \
-                      + 'Content-Type: text/html; charset=utf-8\r\n\r\n' \
+                      + 'Content-Type: text/html; charset=utf-8\r\n\' \
+                      + 'Content-Length: ' + str(len(r)) + '\r\n\r\n' \
                       + r
         else:
             response += '404 Not Found\r\n' \
