@@ -44,6 +44,9 @@ while True:
     # HEAD response 필요한 header 정보 #
     elif request[0] == 'HEAD':
         if request[1] in files: # 정상적으로 파일을 요청한 경우
+            f = open(request[1], 'r') # 파일을 읽기모드로 r에 담기
+            r = f.read()
+            f.close()
             response += '200 OK\r\n'  \
                       + 'Date: ' + date + '\r\n' \
                       + 'Connection: close\r\n' \
@@ -58,14 +61,14 @@ while True:
     # GET response body #
     elif request[0] == 'GET':
         if request[1] in files: # 존재하는 파일을 정상적으로 요청
-            f = open(request[1], 'r') # 파일을 읽기모드로 r에 담기
+            f = open(request[1], 'r')
             r = f.read()
             f.close()
             response += '200 OK\r\n' \
                       + 'Date: ' + date + '\r\n' \
                       + 'Connection: close\r\n' \
                       + 'Vary: User-Agent,Accept-Encoding\r\n' \
-                      + 'Content-Type: text/html; charset=utf-8\r\n\' \
+                      + 'Content-Type: text/html; charset=utf-8\r\n' \
                       + 'Content-Length: ' + str(len(r)) + '\r\n\r\n' \
                       + r
         else:
