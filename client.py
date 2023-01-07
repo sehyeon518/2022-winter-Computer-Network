@@ -12,7 +12,7 @@ while True:
     print('********server 연결********')
 
     message = input('Request or exit(-1)>> ') # 사용자로부터 request 입력 받기
-    message = message.split()
+    message = message.split() # message = ['GET', 'test.html']
 
     # request 형태
     # GET test.html / HTTP/1.0
