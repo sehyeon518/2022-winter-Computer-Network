@@ -14,24 +14,34 @@ while True:
     message = input('Request or exit(-1)>> ') # 사용자로부터 request 입력 받기
     message = message.split()
 
+    # request 형태
+    # GET test.html / HTTP/1.0
+    # HOST: 127.0.0.1
+    # User-Agent: Mozilla/5.0 (Macintosh; ...) ... Firefox/51.0
+    # Accept: text/html, application/xhtml+xml,...,*/*;q=0.8
+    # Accept-Language: en-US, en;q=0.5
+    # Accept-Encoding: gzip, deflate
+    # Connection: keep-alive
+    # Upgrade-Insecure-Requests: 1
+    # Content-Type: multipart/form-data; boundary=-1265974
+    # Content-Length: 345
     if message[0] == '-1':
         request = message[0]
         clientSocket.send(request.encode())
         clientSocket.close()
         break
-    if message[0] == 'GET' or message[0] == 'HEAD' or message[0] == 'POST':
+    if message[0] == 'GET' or message[0] == 'HEAD' or message[0] == 'POST' or message[0] == 'PUT':
         request = message[0] + ' '
         if len(message) > 1:
             request += ' '.join(message[1:])
         request += ' / HTTP/1.0\n' \
                  + 'HOST: ' + serverName + '\n' \
-                 + 'Accept-Language: en-us\n'
+                 + 'Accept-Language: en-us\n' \
+                 + 'Connection: keep-alive'
+            
     else:
         request = " ".join(message)
 
-    # request 형태
-    # GET test.html * \ HTTP/1.0
-    # HOST: 127.0.0.1
     clientSocket.send(request.encode()) # socket으로 request 보내기
 
     response = clientSocket.recv(1024).decode() # server name, port에 접근할 필요 없음 -> socket 사용
