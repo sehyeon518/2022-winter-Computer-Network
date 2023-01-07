@@ -74,17 +74,13 @@ while True:
     # POST response #
     elif request[0] == 'POST':
         if request[1] not in files and '.' in request[1]: # 존재하지 않는 파일 create
-            f = open(request[1], 'r')
-            r = f.read()
-            f.close()
             newfile = open(request[1], 'w')
             newfile.close()
             response += '201 Created ' + request[1] + '\r\n' \
                       + 'Date: ' + date + '\r\n' \
                       + 'Connection: close\r\n' \
                       + 'Vary: User-Agent,Accept-Encoding\r\n' \
-                      + 'Content-Type: text/html; charset=utf-8\r\n\r\n' \
-                      + r
+                      + 'Content-Type: text/html; charset=utf-8\r\n\r\n'
         elif request[1] in files:
             f = open(request[1], 'r')
             r = f.read()
