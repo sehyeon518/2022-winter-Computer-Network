@@ -21,7 +21,7 @@ while True:
     # Accept: text/html, application/xhtml+xml,...,*/*;q=0.8
     # Accept-Language: en-US, en;q=0.5
     # Accept-Encoding: gzip, deflate
-    # Connection: keep-alive
+    # Connection: keep-alive -> HTTP/1.1
     # Upgrade-Insecure-Requests: 1
     # Content-Type: multipart/form-data; boundary=-1265974
     # Content-Length: 345
@@ -29,6 +29,7 @@ while True:
         request = message[0]
         clientSocket.send(request.encode())
         clientSocket.close()
+        print('***********close***********')
         break
     if message[0] == 'GET' or message[0] == 'HEAD' or message[0] == 'POST' or message[0] == 'PUT':
         request = message[0] + ' '
@@ -36,9 +37,10 @@ while True:
             request += ' '.join(message[1:])
         request += ' / HTTP/1.0\n' \
                  + 'HOST: ' + serverName + '\n' \
-                 + 'Accept-Language: en-us\n' \
-                 + 'Connection: keep-alive'
-            
+                 + 'Accept: text/html' \
+                 + 'Accept-Language: en-us\n'  \
+                 + 'Connection: close\n' \
+                 + 'Content-Type: multipart/related'
     else:
         request = " ".join(message)
 

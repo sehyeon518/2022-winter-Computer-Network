@@ -5,10 +5,6 @@ from socket import *
 import os
 import time
 
-f = open('test.html', 'r') # test에 사용할 파일 읽기모드로 r에 담기
-r = f.read()
-f.close()
-
 files = os.listdir(os.getcwd()) # 요청한 파일이 현재 dir에 있는지 판단하기 위함
 date = time.strftime('%d %b %Y %H:%M:%S %Z', time.localtime(time.time())) # header의 Date
 
@@ -37,7 +33,7 @@ while True:
     # Age: 3464
     # Date: Wed, 10 Aug 2016 09:46:25 GMT
     # X-Cache-Info: caching
-    # Content-Length: 220
+    # Content-Length: 220 -> 선택사항
     response = 'HTTP/1.0 ' # HTTP version: 모든 요청마다 연결과 해제 반복
 
     if request[0] == '-1':
@@ -50,38 +46,72 @@ while True:
         if request[1] in files: # 정상적으로 파일을 요청한 경우
             response += '200 OK\n'  \
                       + 'Date: ' + date + '\n' \
-                      + 'Server: local\n' \
-                      + 'Content-Length: ' + str(len(r)) + '\n' \
+                      + 'Connection: close\n' \
+                      + 'Vary: User-Agent,Accept-Encoding\n' \
                       + 'Content-Type: text/html; charset=utf-8'
         else: # 존재하지 않는 파일을 요청한 경우
             response += '404 Not Found\n' \
                       + 'Date: ' + date + '\n' \
-                      + 'Server: local'
+                      + 'Connection: close\n' \
+                      + 'Content-Type: text/html; charset=utf-8'
     # GET response body #
     elif request[0] == 'GET':
         if request[1] in files:
+            f = open(request[1], 'r') # 파일을 읽기모드로 r에 담기
+            r = f.read()
+            f.close()
             response += '200 OK\n' \
                       + 'Date: ' + date + '\n' \
-                      + 'Server: local\n' \
-                      + 'Content-Length: ' + str(len(r)) + '\n' \
+                      + 'Connection: close\n' \
+                      + 'Vary: User-Agent,Accept-Encoding\n' \
                       + 'Content-Type: text/html; charset=utf-8\n\n' \
                       + r
         else:
             response += '404 Not Found\n' \
                       + 'Date: ' + date + '\n' \
-                      + 'Server: local'
+                      + 'Connection: close\n' \
+                      + 'Content-Type: text/html; charset=utf-8'
     # POST response #
     elif request[0] == 'POST':
-        if request[1] not in files and '.' in request[1]:
+        if request[1] not in files and '.' in request[1]: # 존재하지 않는 파일 create
+            f = open(request[1], 'r')
+            r = f.read()
+            f.close()
             newfile = open(request[1], 'w')
             newfile.close()
-            response += '201 Created\n' + request[1] + ' '\
-                      + 'Date: ' + date
+            response += '201 Created\n' + request[1] + '\n' \
+                      + 'Date: ' + date + '\n\n' \
+                      + r
+        elif request[1] in files:
+            f = open(request[1], 'r')
+            r = f.read()
+            f.close()
+            response += '200 OK\n' + request[1] + '\n' \
+                      + 'Date: ' + date + '\n\n' \
+                      + r
         else:
             response += '404 Not Found'
+    # PUT response #
+    elif request[0] == 'PUT':
+        if request[1] in files:
+            f = open(request[1], 'r')
+            r = f.read()
+            f.close()
+            response += '200 OK\n' + request[1] + '\n' \
+                      + 'Date: ' + date + '\n' \
+                      + 'Connection: close\n' \
+                      + 'Vary: User-Agent,Accept-Encoding\n' \
+                      + 'Content-Type: text/html; charset=utf-8\n\n' \
+                      + r
+        else:
+            response += '404 Not Found\n' \
+                      + 'Date: ' + date + '\n' \
+                      + 'Connection: close\n' \
+                      + 'Content-Type: text/html; charset=utf-8'
     # Invalid method #
-    else:
-        response += '400 Bad Request' # method 해석 불가능한 경우
+    else: # method 해석이 불가능한 경우
+        response += '400 Bad Request\n' \
+                  + 'Date: ' + date
 
     connectionSocket.send(response.encode()) # socket 보내기
     
