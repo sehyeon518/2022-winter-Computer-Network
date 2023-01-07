@@ -1,3 +1,6 @@
+# client.py
+# server에 request를 보내고 response를 받아 출력한다
+
 from socket import *
 
 serverName = '127.0.0.1' # server
@@ -8,9 +11,14 @@ while True:
     clientSocket.connect((serverName, serverPort)) # (IP, port) 서버 연결
     print('********server 연결********')
 
-    message = input('Request>> ') # 사용자로부터 request 입력 받기
+    message = input('Request or exit(-1)>> ') # 사용자로부터 request 입력 받기
     message = message.split()
 
+    if message[0] == '-1':
+        request = message[0]
+        clientSocket.send(request.encode())
+        clientSocket.close()
+        break
     if message[0] == 'GET' or message[0] == 'HEAD' or message[0] == 'POST':
         request = message[0] + ' '
         if len(message) > 1:
