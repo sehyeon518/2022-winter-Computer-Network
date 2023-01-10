@@ -10,8 +10,13 @@ Local host에서 통신을 진행하였다. client.py에서 설정한 server nam
 
 프로그램의 정상적인 종료를 위해서 '-1'을 입력하는 경우를 따로 구현하였다. -1을 입력하면 즉시 모든 연결을 끊는다.
 ## HTTP 명령어 결과
-### GET
+### 
+200 OK, 404 Not Found
 ### POST
+201 Created
 ### HEAD
+200 OK, 404 Not Found
 ### PUT
+200 Ok, 404 Not Found
 ### 기타
+400 Bad Request
