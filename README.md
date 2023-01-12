@@ -1,4 +1,16 @@
 # 2022-winter-Computer-Network
+* [client](#clientpy) 코드 설명
+* [server](#serverpy) 코드 설명
+* [동작환경](#동작-환경)
+    - [실행 전 파일 목록](#실행-전-파일-목록)
+* [HTTP 명령어 결과](#http-명령어-결과) 
+    - [서버 대기](#서버-대기)
+    - [연결 완료](#연결-완료)
+    - [GET](#get)
+    - [POST](#post)
+    - [HEAD](#head)
+    - [PUT](#put)
+    - [기타](#기타)
 ## client.py
 server에 request 문자열을 보내고 response를 받아 출력한다.
 ## server.py
